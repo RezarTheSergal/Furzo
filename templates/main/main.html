@@ -1,0 +1,76 @@
+{% load static %}
+
+<div class="main-content" data-post-id="{{ post.id }}" data-user-reaction="{{ user_reaction }}">
+    <div class="img-container">
+        <img src="{{ post.url }}" alt="{{ post.title|escape }}" loading="lazy">
+        
+        <div class="stats-panel">
+            <button class="stat-item like" 
+                    data-post-id="{{ post.id }}" 
+                    onclick="toggleLike(this)"
+                    aria-label="Поставить лайк">
+                <span class="stat-icon">❤️</span>
+                <span class="stat-count">{{ post.likes|floatformat:0 }}</span>
+            </button>
+                
+            <button class="stat-item dislike" 
+                    data-post-id="{{ post.id }}" 
+                    onclick="toggleDislike(this)"
+                    aria-label="Поставить дизлайк">
+                <span class="stat-icon">💔</span>
+                <span class="stat-count">{{ post.dislikes|floatformat:0 }}</span>
+            </button>
+                
+            <button class="stat-item comment" 
+                    onclick="toggleComments(this)"
+                    aria-label="Показать комментарии">
+                <span class="stat-icon">💬</span>
+                <span class="stat-count">{{ post.comments_count|floatformat:0 }}</span>
+            </button>
+                
+            <div class="stat-item views" aria-label="Количество просмотров">
+                <span class="stat-icon">👁️</span>
+                <span class="stat-count">{{ post.views|floatformat:0 }}</span>
+            </div>
+        </div>
+        
+        <div class="comments-insertion">
+            {% include "main/comments.html" %}
+        </div>
+        
+        <div class="bottom-overlay">
+            <div class="post-user">{{ post.title|escape }}</div>
+            <div class="post-author">Автор: {{ post.user.username|default:"Неизвестен"|escape }}</div>
+            
+            <div class="post-datetime">
+                <div class="datetime-wrapper">
+                    <span class="datetime-icon">📅</span>
+                    <div class="datetime-info">
+                        <div class="post-date">{{ post.posted|date:"d F Y" }}</div>
+                        <div class="post-time">{{ post.posted|date:"H:i" }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tags-section">
+                <div class="tags-title">Теги:</div>
+                <div class="tags-container">
+                    <div class="tags">
+                        {% for tag in post.tags %}
+                            <button class="tag" 
+                                    onclick="toggleSearchByTag(this)"
+                                    aria-label="Поиск по тегу {{ tag|escape }}">
+                                <span class="tag-name">{{ tag|escape }}</span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+
+<script src="{% static 'js/stats-panel.js' %}"></script>
+<script src="{% static 'js/scrolling-content.js' %}"></script>

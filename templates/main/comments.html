@@ -1,0 +1,80 @@
+{% load static %}
+
+<div class="comments-overlay">
+    <button class="close-comments-btn" type="button" onclick="closeComments()">⛌</button>
+    <div class="post-title">Комментарии к посту: "{{ post.title }}"</div>
+    
+    <div class="comments-section">
+        <div class="comments">
+            {% if comments %}
+                {% for comment in comments %}
+                    {% if not comment.parent %}
+                        <div class="comment-thread">
+                            <div class="comment-item" data-comment-item-id="{{ comment.id }}">
+                                <span class="comment-author">{{ comment.user.username|default:"Аноним" }}</span>
+                                <span class="comment-content">{{ comment.content }}</span>
+                                {% if comment.updated_at != comment.created_at %}
+                                    <span class="comment-date">Изменено: {{ comment.updated_at|date:"d.m.Y H:i" }}</span>
+                                {% else %}
+                                    <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                                {% endif %}
+                                
+                                <div class="comment-actions">
+                                    <button class="reply-btn" type="button"
+                                        data-comment-reply-id="{{ comment.id }}">
+                                        Ответить
+                                    </button>
+                                    {% with replies_count=comment.replies.count  %}
+                                        {% if replies_count > 0 %}
+                                            <button class="toggle-replies-btn" data-comment-id="{{ comment.id }}" onclick="toggleReplies()">
+                                                <span class="replies-icon">▼</span>
+                                                Ответы
+                                                <span class="replies-count">({{ replies_count }})</span>
+                                            </button>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                                            
+                                <div class="reply-form-container" id="reply-form-{{ comment.id }}" style="display: none;"></div>
+
+                                <div class="comment-replies" id="replies-{{ comment.id }}">
+                                    {% for reply in comment.replies.all %}
+                                        <div class="comment-item">
+                                            <span class="comment-author">{{ reply.user.username|default:"Аноним" }}</span>
+                                            <span class="comment-content">{{ reply.content }}</span>
+                                            {% if reply.updated_at != reply.created_at %}
+                                                <span class="comment-date">Изменено: {{ reply.updated_at|date:"d.m.Y H:i" }}</span>
+                                            {% else %}
+                                                <span class="comment-date">{{ reply.created_at|date:"d.m.Y H:i" }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>  
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="comments-empty">
+                    💬 Пока нет комментариев<br>
+                    <small>Будьте первым, кто оставит комментарий!</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="comment-form-container">
+        <h4 class="form-title">Оставить комментарий</h4>
+        <form class="comment-form" id="main-comment-form" data-post-id="{{ post.id }}">
+            {% csrf_token %}
+            <textarea name="content" placeholder="Ваш комментарий..." required></textarea>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Отправить</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script src="{% static 'js/comments.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/comments.css' %}">

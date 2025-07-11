@@ -1,0 +1,15 @@
+{% load static %}
+<div class="navbar">
+    <div class="logo">
+        <img src="{% static 'img/logo_simple.png' %}" alt="Logo">
+        <span>Furzo</span>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="navigation">
+        <div class="nav-title"></div>{% filter upper %}Navigation{% endfilter %}</div>
+        <a href="/" class="nav-item active"><i class="fas fa-home"></i>Home</a>
+        <a href="{% url 'profile' %}" class="nav-item"><i class="fas fa-home"></i>Profile</a>
+    </div>
+</div>

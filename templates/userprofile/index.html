@@ -1,0 +1,63 @@
+{% extends "module.html" %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block template %}
+
+{% if not user.is_authenticated %}
+    <div class="center-both empty-profile">
+    <div class="empty-profile-content">
+        <h2>Добро пожаловать в FurryArt!</h2>
+        <p>Чтобы просматривать и выкладывать работы, <b>зарегистрируйтесь</b> или войдите в свой аккаунт.</p>
+        <div class="empty-profile-btns">
+        <a href="{% url 'account_signup' %}" class="btn main-btn">Зарегистрироваться</a>
+        <a href="{% url 'account_login' %}" class="btn secondary-btn">Войти</a>
+        </div>
+    </div>
+    </div>
+{% else %}
+    <div class="profile-container">
+    <div class="profile-header">
+        <img src="{{ user.avatar_url }}" alt="Avatar" class="profile-avatar" id="avatar-img">
+        <div class="profile-info">
+        <h2 class="profile-username">{{ user.username|default:"Аноним"|escape }}</h2>
+        <span class="profile-badge species">{{ user.species|default:"Неизвестен"|escape }}</span>
+        <p class="profile-bio">{{ user.bio }}</p>
+        <div class="profile-stats">
+            <span><b>{{ user.followers_count }}</b> подписчиков</span>
+            <span><b>{{ user.following_count }}</b> подписок</span>
+            <span><b>{{ user.images_count }}</b> работ</span>
+            <span><b>{{ user.total_likes }}</b> лайков</span>
+        </div>
+        {% if user.is_owner %}
+        <button class="edit-profile-btn" onclick="openEditProfile()">Редактировать профиль</button>
+        {% endif %}
+        </div>
+    </div>
+    <div class="profile-gallery">
+        {% if user.images.count == 0 %}
+        <div class="center-both no-images">
+            <div class="no-images-content">
+                <img src="/static/img/empty-gallery.svg" alt="Нет изображений" class="no-images-illustration">
+                <h3>Пока что здесь пусто...</h3>
+                <p>Пользователь ещё не выложил ни одной работы.</p>
+            </div>
+        </div>
+        {% else %}
+        {% for image in user.images %}
+        <div class="gallery-item" data-image-id="{{ image.id }}">
+            <img src="{{ image.url }}" alt="Artwork">
+            <div class="gallery-overlay">
+            <span class="likes"><i class="fa fa-heart"></i> {{ image.likes }}</span>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    </div>
+{% endif %}
+
+<link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+<link rel="stylesheet" href="{% static 'css/userprofile.css' %}">
+{% endblock %}

@@ -1,0 +1,224 @@
+:root {
+  --main-blue: #78AEC6;
+  --accent-orange: #FF914D;
+  --background: #FAFCFB;
+  --text-dark: #222;
+  --badge-bg: #B9F0F9;
+  --badge-text: #0379C7;
+}
+
+body {
+  background: var(--background);
+  color: var(--text-dark);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+
+.parent-container {
+  position: relative; 
+  height: 100%;  
+  min-height: 400px;   
+}
+
+.center-both {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  width: 90%;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(120, 174, 198, 0.13);
+  padding: 36px 32px;
+  text-align: center;
+  color: var(--main-blue, #78AEC6);
+}
+
+/* Кнопки и текст внутри */
+.empty-profile-content h2,
+.no-images-content h3 {
+  margin-bottom: 12px;
+  color: var(--main-blue, #78AEC6);
+}
+
+.empty-profile-content p,
+.no-images-content p {
+  color: #3a3a3a;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+}
+
+.empty-profile-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 10px 28px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s, color 0.18s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(120, 174, 198, 0.07);
+}
+
+.main-btn {
+  background: var(--main-blue, #78AEC6);
+  color: #fff;
+}
+
+.main-btn:hover {
+  background: #4e8fa9;
+}
+
+.secondary-btn {
+  background: #fff;
+  color: var(--main-blue, #78AEC6);
+  border: 2px solid var(--main-blue, #78AEC6);
+}
+
+.secondary-btn:hover {
+  background: var(--main-blue, #78AEC6);
+  color: #fff;
+}
+
+.no-images-illustration {
+  width: 90px;
+  margin-bottom: 18px;
+  opacity: 0.8;
+}
+
+
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(120, 174, 198, 0.15);
+  padding: 32px 24px;
+}
+
+.profile-header {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  border-bottom: 1px solid #e0e9f0;
+  padding-bottom: 24px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--main-blue);
+  background: var(--badge-bg);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-username {
+  font-size: 2rem;
+  margin: 0;
+  color: var(--main-blue);
+}
+
+.profile-badge {
+  display: inline-block;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 0.95rem;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+.profile-bio {
+  margin: 14px 0;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+.profile-socials .social-link {
+  color: var(--accent-orange);
+  margin-right: 12px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.profile-stats {
+  margin: 18px 0 0 0;
+  font-size: 1rem;
+  color: #555;
+  display: flex;
+  gap: 18px;
+}
+
+.edit-profile-btn {
+  background: var(--accent-orange);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+.edit-profile-btn:hover {
+  background: #ff7a1f;
+}
+
+.profile-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5fafd;
+  box-shadow: 0 2px 8px rgba(120, 174, 198, 0.07);
+  transition: transform 0.15s;
+}
+.gallery-item:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+.gallery-item img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(120, 174, 198, 0.75);
+  color: #fff;
+  font-size: 1rem;
+  padding: 6px 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+.likes i {
+  color: #fff;
+  margin-right: 5px;
+}
