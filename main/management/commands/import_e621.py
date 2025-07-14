@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-from services.e621_api import E621APIClient
-from services.import_posts import PostImporter
+from services.e621.import_posts import PostImporter, E621APIClient
 from django.conf import settings
 
 class Command(BaseCommand):

@@ -3,30 +3,16 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.db import transaction
-from django.utils import timezone
-from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AnonymousUser
 import json
 import logging
+from utils.logging_config import get_client_ip, DecoratorActionLogger
 from .models import Post, UserPostReaction, UserPostView, Comment
 
 logger = logging.getLogger(__name__)
-
-def get_client_ip(request):
-    """Безопасное получение IP-адреса клиента"""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    
-    if not ip or len(ip) > 45:  # IPv6 максимум 45 символов
-        ip = '127.0.0.1'  # Fallback IP
-    
-    return ip
+decorator_logger = DecoratorActionLogger("user_actions")
 
 def get_post_boundaries():
     try:
@@ -65,7 +51,6 @@ def index(request):
         return render(request, "main/error.html", {"error": "Произошла ошибка при загрузке страницы"})
 
 def get_post_data_context(post_id):
-    """Безопасное получение данных поста"""
     try:
         post = get_object_or_404(Post, id=post_id)
         comments = Comment.objects.filter(post=post).select_related('user').order_by('created_at')
@@ -78,7 +63,6 @@ def get_post_data_context(post_id):
         raise
 
 def handle_register_view(request, context):
-    """Безопасная обработка регистрации просмотра"""
     try:
         if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
             try:
@@ -100,9 +84,9 @@ def handle_register_view(request, context):
         return context
 
 @csrf_exempt
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def get_post(request):
-    """Безопасное получение следующего/предыдущего поста"""
     try:
         if request.content_type != 'application/json':
             return JsonResponse({'error': 'Неверный Content-Type'}, status=400)
@@ -161,9 +145,9 @@ def get_post(request):
         return JsonResponse({'error': 'Внутренняя ошибка сервера'}, status=500)
 
 @csrf_exempt
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def get_specific_post(request):
-    """Безопасное получение конкретного поста по ID"""
     try:
         if request.content_type != 'application/json':
             return JsonResponse({'error': 'Неверный Content-Type'}, status=400)
@@ -191,7 +175,6 @@ def get_specific_post(request):
         return JsonResponse({'error': 'Внутренняя ошибка сервера'}, status=500)
 
 def register_view(request, post):
-    """Безопасная регистрация просмотра поста"""
     try:
         ip_address = get_client_ip(request)
         user_agent = request.META.get('HTTP_USER_AGENT', '')
@@ -226,6 +209,7 @@ def register_view(request, post):
 
 @csrf_exempt
 @login_required
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def toggle_like(request):
     try:
@@ -279,9 +263,9 @@ def toggle_like(request):
 
 @csrf_exempt
 @login_required
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def toggle_dislike(request):
-    """Безопасное переключение дизлайка"""
     try:
         if request.content_type != 'application/json':
             return JsonResponse({'error': 'Неверный Content-Type'}, status=400)
@@ -332,9 +316,9 @@ def toggle_dislike(request):
         return JsonResponse({'error': 'Внутренняя ошибка сервера'}, status=500)
 
 @csrf_exempt
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def increment_views(request):
-    """Безопасное ручное увеличение просмотров"""
     try:
         if request.content_type != 'application/json':
             return JsonResponse({'error': 'Неверный Content-Type'}, status=400)
@@ -363,6 +347,7 @@ def increment_views(request):
         return JsonResponse({'error': 'Внутренняя ошибка сервера'}, status=500)
 
 @csrf_exempt
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def comments(request):
     try:
@@ -392,6 +377,7 @@ def comments(request):
 
 @csrf_exempt   
 @login_required
+@decorator_logger.async_log_action()
 @require_http_methods(["POST"])
 def add_comment(request):
     try:
